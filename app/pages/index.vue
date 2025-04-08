@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToggle, useDebounceFn } from '@vueuse/core'
+import { useToggle } from '@vueuse/core'
 import type { Contributions } from '~~/types'
 
 const colorMode = useColorMode()
@@ -24,7 +24,7 @@ const userUrl = `https://github.com/${user.username}`
 
 const teams = (() => {
   const uniqTeams = prs.reduce((map, { repo }) => {
-    const team = repo.split('/')[0]
+    const team = repo.split('/')[0]!
 
     map.set(team, {
       name: team,
@@ -32,7 +32,7 @@ const teams = (() => {
     })
 
     return map
-  }, new Map<Team>())
+  }, new Map<string, Team>())
 
   return [...uniqTeams.values()]
 })()
@@ -71,9 +71,9 @@ useSeoMeta({
   twitterImage: `${url.origin}/og.png`,
 })
 
-const onTeamSwitch = useDebounceFn((team: Team) => {
+function onTeamSwitch(team: Team) {
   selected.value = team.name === selected.value ? '' : team.name
-}, 1000)
+}
 </script>
 
 <template>
@@ -159,7 +159,7 @@ const onTeamSwitch = useDebounceFn((team: Team) => {
       </div>
 
       <UButton
-        color="neutral"
+        color="white"
         variant="outline"
         class="px-1.5"
         @click="toggleCollapse()"
