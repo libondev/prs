@@ -1,0 +1,40 @@
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sc);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sh);
+}
+
+html {
+  --sc: #cecece;
+  --sh: #bbb;
+  font-feature-settings: 'liga' 1, 'calt' 1;
+  overflow-y: scroll;
+}
+
+html.dark {
+  --sc: #424242;
+  --sh: #666666;
+  color-scheme: dark;
+}
+
+@supports (font-variation-settings: normal) {
+  body { font-family: InterVariable, Inter, Geist, 'Open Sans', sans-serif; }
+}
+
+img {
+  user-select: none
+}

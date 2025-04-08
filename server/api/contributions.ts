@@ -15,6 +15,7 @@ export default defineCachedEventHandler(async (event) => {
     // q: `type:pr+author:"${user.username}"+-user:"${user.username}"`,
     // To include the pull requests to your repositories
     q: `type:pr+author:"${user.username}"`,
+    advanced_search: true,
     per_page: 50,
     page: 1,
   })
