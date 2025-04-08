@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useToggle } from '@vueuse/core'
 import type { Contributions } from '~~/types'
 
 const colorMode = useColorMode()
@@ -12,7 +13,9 @@ interface Team {
   state: 'merged'
 }
 
-const selected = ref<string>('')
+const selected = ref('')
+const [collapse, toggleCollapse] = useToggle(false)
+
 const url = useRequestURL()
 const { user, prs } = contributions.value
 
@@ -43,6 +46,14 @@ const matchedPrs = computed(() => {
   }
 
   return prs.filter(it => it.repo.startsWith(_team))
+})
+
+const collapseTeams = computed(() => {
+  if (collapse.value) {
+    return teams.slice(0, 3)
+  }
+
+  return teams
 })
 
 useHead({
@@ -129,7 +140,7 @@ function onTeamSwitch(team: Team) {
 
     <div class="group flex items-center flex-wrap gap-1.5 my-6 sm:mb-10">
       <div
-        v-for="team of teams"
+        v-for="team of collapseTeams"
         :key="team.name"
         class="flex items-center gap-1 px-1.5 py-1 rounded-md group-hover:transition-colors text-sm cursor-default"
         :class="[team.name === selected ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10']"
@@ -148,6 +159,15 @@ function onTeamSwitch(team: Team) {
           <UIcon name="i-material-symbols-attach-file-rounded" class="rotate-45" />
         </a>
       </div>
+
+      <UButton
+        color="neutral"
+        variant="outline"
+        class="px-1.5"
+        @click="toggleCollapse()"
+      >
+        <UIcon name="i-solar-alt-arrow-left-line-duotone" :class="{ 'rotate-180': collapse }" />
+      </UButton>
     </div>
 
     <UDivider class="mt-2 mb-6 sm:mb-10 w-1/2 mx-auto" />
