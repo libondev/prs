@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useToggle } from '@vueuse/core'
+import { useToggle, useDebounceFn } from '@vueuse/core'
 import type { Contributions } from '~~/types'
 
 const colorMode = useColorMode()
@@ -10,7 +10,8 @@ if (!contributions.value) {
 }
 
 interface Team {
-  state: 'merged'
+  name: string
+  repo: string
 }
 
 const selected = ref('')
@@ -40,7 +41,7 @@ const matchedPrs = computed(() => {
   const _team = selected.value
 
   if (!_team) {
-    return prs
+    return prs.slice(0, 50)
   }
 
   return prs.filter(it => it.repo.startsWith(_team))
@@ -70,10 +71,9 @@ useSeoMeta({
   twitterImage: `${url.origin}/og.png`,
 })
 
-// switch selected team
-function onTeamSwitch(team: Team) {
+const onTeamSwitch = useDebounceFn((team: Team) => {
   selected.value = team.name === selected.value ? '' : team.name
-}
+}, 1000)
 </script>
 
 <template>
@@ -136,7 +136,7 @@ function onTeamSwitch(team: Team) {
       </div>
     </div>
 
-    <div class="group flex items-center flex-wrap gap-1.5 my-6 sm:mb-10">
+    <div class="group flex items-center flex-wrap gap-1.5 my-6 sm:mb-10 select-none">
       <div
         v-for="team of collapseTeams"
         :key="team.name"
@@ -159,6 +159,7 @@ function onTeamSwitch(team: Team) {
       </div>
 
       <UButton
+        color="neutral"
         variant="outline"
         class="px-1.5"
         @click="toggleCollapse()"
@@ -173,7 +174,7 @@ function onTeamSwitch(team: Team) {
       <PullRequest v-for="pr of matchedPrs" :key="pr.url" :data="pr" />
     </div>
 
-    <p class="text-center py-16 opacity-50">
+    <p class="text-center py-12 opacity-50">
       And more...
     </p>
   </UContainer>
