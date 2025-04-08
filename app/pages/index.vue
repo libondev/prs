@@ -22,15 +22,13 @@ const { user, prs } = contributions.value
 const userUrl = `https://github.com/${user.username}`
 
 const teams = (() => {
-  const uniqTeams = prs.reduce((map, { state, repo }) => {
-    if (state === 'merged') {
-      const team = repo.split('/')[0]
+  const uniqTeams = prs.reduce((map, { repo }) => {
+    const team = repo.split('/')[0]
 
-      map.set(team, {
-        name: team,
-        repo: repo,
-      })
-    }
+    map.set(team, {
+      name: team,
+      repo: repo,
+    })
 
     return map
   }, new Map<Team>())
@@ -161,7 +159,6 @@ function onTeamSwitch(team: Team) {
       </div>
 
       <UButton
-        color="neutral"
         variant="outline"
         class="px-1.5"
         @click="toggleCollapse()"
